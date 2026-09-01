@@ -3,7 +3,7 @@
 A production-oriented RAG system built with PostgreSQL, pgvector,
 hybrid retrieval, RRF, reranking, ACL, and citation-aware generation.
 
-当前仓库只有说明和 MIT 许可证，源码按下面的目录自己建。
+当前仓库只有说明、MIT 许可证和 `docs/spec/`。源码按 spec 分 11 步自己建，从 [docs/spec/README.md](docs/spec/README.md) 的 Step 1 开始。
 
 ## 做什么
 
