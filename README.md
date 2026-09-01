@@ -1,6 +1,7 @@
-# folio-rag
+# RAGForge
 
-企业级 RAG：文档入库 PostgreSQL，检索后生成带引用的答案。
+A production-oriented RAG system built with PostgreSQL, pgvector,
+hybrid retrieval, RRF, reranking, ACL, and citation-aware generation.
 
 当前仓库只有说明和 MIT 许可证，源码按下面的目录自己建。
 
@@ -50,7 +51,7 @@
 ## 计划目录
 
 ```text
-folio-rag/
+RAGForge/
 ├── pyproject.toml
 ├── .env.example
 ├── alembic.ini
