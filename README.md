@@ -1,4 +1,4 @@
-# rag
+# folio-rag
 
 企业级 RAG：文档入库 PostgreSQL，检索后生成带引用的答案。
 
@@ -50,7 +50,7 @@
 ## 计划目录
 
 ```text
-rag/
+folio-rag/
 ├── pyproject.toml
 ├── .env.example
 ├── alembic.ini
