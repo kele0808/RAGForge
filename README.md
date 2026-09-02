@@ -126,6 +126,40 @@ EMBEDDING_DIM=1536
 DATABASE_URL=postgresql://user:pass@localhost:5432/rag
 ```
 
+## TODO
+
+### 第一期（[docs/spec](docs/spec/README.md)，尚未写代码）
+
+- [ ] Step 1 脚手架与配置
+- [ ] Step 2 PostgreSQL + pgvector 存储
+- [ ] Step 3 Markdown 切块入库
+- [ ] Step 4 向量检索 + 生成（第一条 RAG）
+- [ ] Step 5 全文检索 + RRF
+- [ ] Step 6 按 owner 的 ACL
+- [ ] Step 7 Cross-encoder rerank
+- [ ] Step 8 结构化引用
+- [ ] Step 9 改写 + LangGraph
+- [ ] Step 10 FastAPI
+- [ ] Step 11 PDF / DOCX 解析
+
+### 第一期之后仍缺（企业落地常见，spec 故意没做）
+
+- [ ] 真认证：现在 `user_id` 由调用方传入，没有登录 / JWT / SSO
+- [ ] 文档级分享：多人 ACL、部门、权限变更后如何让检索立刻生效
+- [ ] 更新与删除：改文件后重切块、级联删向量、避免脏 chunk
+- [ ] 异步入库：大文件队列（Kafka / worker），而不是 HTTP 里同步 embedding
+- [ ] 中文分词：`simple` tsvector 对连续中文很弱，需要 zhparser / ParadeDB 一类
+- [ ] 扫描件与复杂表格：文字版 PDF 可以，DeepDoc / OCR 没有
+- [ ] 模型不写 `[n]` 时的引用对齐（第一期不事后猜）
+- [ ] 评测：黄金集 + RAGAS（命中率、忠实度），没有数不能调参
+- [ ] 观测：检索 query、filter、chunk_id、延迟、费用（Langfuse 等）
+- [ ] 流式输出、限流、幂等入库
+- [ ] Docker Compose（API + PostgreSQL + 一键 `vector` 扩展）
+- [ ] LangGraph checkpoint 持久化（进程挂了能续）
+- [ ] 前端 / 管理界面（切块可视化、检索测试页）
+
+不做（除非以后单独开需求）：GraphRAG、Elasticsearch、用 LlamaIndex/LangChain 当问答入口、运行时切换 embedding 模型。
+
 ## License
 
 [MIT](LICENSE)
