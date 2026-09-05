@@ -4,6 +4,8 @@
 
 **Goal:** 从零做出一套可落地的 RAG：文档进 PostgreSQL，混合检索后生成带引用的答案。
 
+**参考项目:** 每一步实现前，对照 [infiniflow/ragflow](https://github.com/infiniflow/ragflow) 的等价实现做批判性借鉴。规则见 [`.cursor/rules/ragforge-learning-norms.mdc`](../../.cursor/rules/ragforge-learning-norms.mdc)。RAGFlow 是同领域的生产项目，栈不同（Peewee+MySQL+ES+MinIO+Redis vs. 我们只用 SQLAlchemy+Postgres/pgvector）——是参考系，不是模板。
+
 **Architecture:** LlamaIndex 只负责解析/切块/写入。PostgreSQL 是唯一索引（正文 + tsvector + pgvector + ACL）。Retrieval Service 先 ACL，再全文+向量召回，RRF 融合后 rerank，只返回 chunk。LangGraph 只编排「改写 → 检索 → 生成」。
 
 **Tech Stack:** Python 3.12+ · FastAPI · SQLAlchemy 2 / asyncpg · Alembic · pgvector · OpenAI `text-embedding-3-small` · LlamaIndex · LangGraph · pytest
