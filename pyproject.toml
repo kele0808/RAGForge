@@ -3,9 +3,15 @@ name = "ragforge"
 version = "0.1.0"
 requires-python = ">=3.13,<3.14"
 dependencies = [
-  "pydantic-settings>=2.4",
-  "pydantic>=2.8",
-]
+    "pydantic-settings>=2.4",
+    "pydantic>=2.8",
+    "sqlalchemy>=2.0.32",
+    "asyncpg>=0.29",
+    "pgvector>=0.3",
+    "alembic>=1.13",
+    "greenlet>=3.0",
+    "psycopg[binary]>=3.2",
+  ]
 
 [project.optional-dependencies]
 dev = [
