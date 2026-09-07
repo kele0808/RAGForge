@@ -7,5 +7,6 @@ class Settings(BaseSettings):
     database_url: str = "postgresql+asyncpg://rag:rag@localhost:5432/ragforge"
 
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
+    chat_model: str = "gpt-4o-mini"
 
 settings = Settings()
