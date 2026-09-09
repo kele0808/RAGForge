@@ -1,10 +1,8 @@
-from itertools import chain
 from types import SimpleNamespace
 import pytest
 from rag.generate.answer import  AnswerGenerator
 from rag.qa import ask
 from rag.types import ChunkHit
-from sqlalchemy.sql.coercions import cls
 
 
 class FakeCompletions:
