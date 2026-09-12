@@ -22,8 +22,8 @@
 - Create: `src/rag/graph/__init__.py`
 - Create: `src/rag/graph/state.py`
 - Create: `src/rag/graph/rag_graph.py`
-- Create: `tests/test_rewrite.py`
-- Create: `tests/test_graph.py`
+- Create: `tests/generate/test_rewrite.py`
+- Create: `tests/graph/test_graph.py`
 - Modify: `pyproject.toml`：`"langgraph>=0.2"`
 - Modify: `src/rag/config.py` 如需：无新配置也可以
 
@@ -101,7 +101,7 @@ async def run_rag(
 
 ## 测试
 
-`tests/test_graph.py`：
+`tests/graph/test_graph.py`：
 
 - 注入 fake retriever（记录收到的 query）和 fake generator
 - history 为空：retriever 收到的 query == 原始 question

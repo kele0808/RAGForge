@@ -2,6 +2,8 @@
 
 本页是地图，不是任务。写代码从 [01-scaffold.md](./01-scaffold.md) 开始。
 
+**节奏（全项目）：** 最终形态按企业 RAG 来想；每一步只做当前能测绿的切片，做完再加下一片。接口留升级点，实现不提前铺全家桶。对照 RAGFlow 等现成项目：好的采纳，不好的按我们的方案。
+
 ## RAG 在本项目里的含义
 
 用户问题不会直接丢给 LLM。流程固定为：
@@ -26,7 +28,7 @@ User ──(acl)──► Document ──(1:N)──► Chunk
 
 - **Document**：一篇文件的元数据（路径、状态、谁能看）。
 - **Chunk**：检索的最小单位。问答时返回的是 chunk，不是整篇文档。
-- **ACL**：存在 document 上（或 document_acl 表），检索时先过滤 `doc_id`，再搜向量。绝不能先搜 50 条再丢掉无权限的。
+- **ACL**：权限挂在 Document 上，Chunk 继承。第 6 步用 `owner_id` 经 `visible_clause` 过滤；以后加授权表时只改这一处。检索时可见性在**同一条 SQL** 里，绝不能先搜 50 条再丢掉无权限的。
 
 ## 运行时两条链路
 
@@ -47,9 +49,9 @@ question → rewrite? → retrieve(user, question) → generate(question, chunks
 ## 检索内部顺序（第 5–7 步才全部出现）
 
 ```text
-1. ACL：user → 允许的 doc_id 集合
-2. lexical：tsvector TopN
-3. vector：embedding <=> query TopN
+1. ACL：visible_clause(user_id) 写进两条召回 SQL（第 6 步 = owner；以后可换成 EXISTS 授权表）
+2. lexical：tsvector TopN（已带可见性）
+3. vector：embedding <=> query TopN（已带可见性）
 4. RRF：合并两路排名
 5. rerank：cross-encoder 打分，截 TopK
 6. 返回 ChunkHit[]（文本、出处、分数）
@@ -90,7 +92,8 @@ class Answer:
 - 不在本仓库实现 Agent 工具调用（工单/CRM）
 - 不把 LlamaIndex QueryEngine 当成问答入口
 - 不支持运行时切换 embedding 模型
-- 第一期不做多租户计费、工作流画布、前端 UI
+- 第一期不做多租户计费、工作流画布、前端 UI、JWT 登录、用户组/分享 API
+- 表和接口按能演进预留（一个可见性函数、同一条 ingest 管线），但预留 ≠ 提前实现
 
 ## 环境
 

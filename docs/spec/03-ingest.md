@@ -24,9 +24,9 @@
 - Create: `src/rag/ingest/chunker.py`
 - Create: `src/rag/ingest/embedder.py`
 - Create: `src/rag/ingest/pipeline.py`
-- Create: `tests/test_chunker.py`
-- Create: `tests/test_embedder.py`
-- Create: `tests/test_ingest_pipeline.py`
+- Create: `tests/ingest/test_chunker.py`
+- Create: `tests/ingest/test_embedder.py`
+- Create: `tests/ingest/test_pipeline.py`
 - Create: `fixtures/sample.md`（测试用样例文档）
 - Modify: `pyproject.toml` 加入：
 
@@ -132,7 +132,7 @@ class FakeEmbeddings:
 
 ## 测试清单
 
-`tests/test_chunker.py`
+`tests/ingest/test_chunker.py`
 
 ```python
 from rag.ingest.chunker import split_markdown
@@ -150,9 +150,9 @@ def test_split_markdown_splits_long_section():
     assert all(len(c) <= 800 for c in chunks)
 ```
 
-`tests/test_embedder.py`：断言 model 名、输出条数、维度。
+`tests/ingest/test_embedder.py`：断言 model 名、输出条数、维度。
 
-`tests/test_ingest_pipeline.py`：fake embedder + 真实测试库，读 `fixtures/sample.md`，`get_chunks_by_document` 能拿到「医院证明」。
+`tests/ingest/test_pipeline.py`：fake embedder + 真实测试库，读 `fixtures/sample.md`，`get_chunks_by_document` 能拿到「医院证明」。
 
 ## 手工（可选，证明真 API）
 

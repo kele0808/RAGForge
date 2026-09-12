@@ -28,7 +28,7 @@ class HybridRetriever:
             self.lexical.search(query, top_k=recall_k),
             self.vector.search(query, top_k=recall_k),
         )
-        # todo 没看懂
+
         by_id: dict[str, ChunkHit] = {h.chunk_id: h for h in lex_hits}
         by_id.update({h.chunk_id: h for h in vec_hits})
 

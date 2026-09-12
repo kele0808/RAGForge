@@ -25,9 +25,9 @@
 - Modify: `src/rag/ingest/pipeline.py` — 写入前计算 tsv，或在 SQL 用 `to_tsvector`
 - Modify: `src/rag/store/repository.py` — 允许插入时带 tsv，或由 DB 生成
 - Modify: `src/rag/qa.py` — 改用 HybridRetriever
-- Create: `tests/test_fusion.py`
-- Create: `tests/test_lexical.py`
-- Create: `tests/test_hybrid.py`
+- Create: `tests/retrieve/test_fusion.py`
+- Create: `tests/retrieve/test_lexical.py`
+- Create: `tests/retrieve/test_hybrid.py`
 - Alembic 新修订：`0002_chunks_tsv_gin.py`
 
 ```sql

@@ -7,7 +7,7 @@ from rag.ingest.embedder import Embedder
 from rag.ingest.pipeline import IngestPipeline
 from rag.models.document import Document
 from rag.store.repository import Repository
-REPO_DIR = Path(__file__).resolve().parent.parent
+REPO_DIR = Path(__file__).resolve().parents[2]
 SAMPLE = REPO_DIR / 'fixtures' / 'sample.md'
 MODEL = "text-embedding-3-small"
 DIM = 1536

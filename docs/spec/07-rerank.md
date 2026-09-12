@@ -28,8 +28,8 @@ rerank_candidates: int = 50
 ```
 
 - Modify: `pyproject.toml`：`"sentence-transformers>=3.0"`
-- Create: `tests/test_rerank.py`
-- Modify: `tests/test_hybrid.py` 或新建 `tests/test_retrieve_service.py`
+- Create: `tests/retrieve/test_rerank.py`
+- Modify: `tests/retrieve/test_hybrid.py` 或新建 `tests/retrieve/test_service.py`
 
 ## Interfaces
 
@@ -82,7 +82,7 @@ assert "医院证明" in out[0].content
 第一次本地下载 `BAAI/bge-reranker-base` 可能较慢。CI 默认不跑真模型。可加：
 
 ```bash
-pytest tests/test_rerank.py -k real --runslow
+pytest tests/retrieve/test_rerank.py -k real --runslow
 ```
 
 没有 GPU 用 CPU 即可，候选 50 条可接受。

@@ -1,9 +1,85 @@
 # RAGForge
 
-A production-oriented RAG system built with PostgreSQL, pgvector,
-hybrid retrieval, RRF, reranking, ACL, and citation-aware generation.
+用 PostgreSQL + pgvector 从零搭一套可演进的 RAG：混合检索、RRF、权限过滤、带引用生成。按 [docs/spec/README.md](docs/spec/README.md) 分步实现；对照 [RAGFlow](https://github.com/infiniflow/ragflow) 批判性借鉴，不照抄。
 
-当前仓库只有说明、MIT 许可证和 `docs/spec/`。源码按 spec 分 11 步自己建，从 [docs/spec/README.md](docs/spec/README.md) 的 Step 1 开始。
+当前源码做到 **Step 5**（入库 + 向量/全文 + RRF）。还没有 HTTP API（Step 10）。clone 之后先把测试跑绿。
+
+## 克隆后怎么跑
+
+测试库账号写死在 `tests/conftest.py`：`rag` / `rag`，库名 `ragforge_test`。应用库默认是同用户下的 `ragforge`。改用户名或密码的话，测试也会对不上。
+
+**pytest 不打真实 OpenAI**，可以没有 API Key。真入库 / 真问答才需要 `OPENAI_API_KEY`。
+
+### 1. 安装本机依赖
+
+- **Python 3.13**（`requires-python = ">=3.13,<3.14"`，3.12 / 3.14 都不行）
+- **[uv](https://docs.astral.sh/uv/)**：`curl -LsSf https://astral.sh/uv/install.sh | sh`
+- **PostgreSQL**（建议 16）+ **[pgvector](https://github.com/pgvector/pgvector)**
+
+macOS 示例：
+
+```bash
+brew install python@3.13 postgresql@16
+# pgvector：按官方文档装进你的 Postgres；装好后能 `CREATE EXTENSION vector`
+```
+
+### 2. 拉代码并装包
+
+```bash
+git clone <this-repo>
+cd RAGForge
+uv sync --extra dev
+```
+
+### 3. 建库并启用 pgvector
+
+用本机超级用户连上 Postgres（Homebrew 常见是你的系统用户）：
+
+```bash
+psql postgres <<'SQL'
+CREATE USER rag WITH PASSWORD 'rag';
+CREATE DATABASE ragforge OWNER rag;
+CREATE DATABASE ragforge_test OWNER rag;
+SQL
+
+psql ragforge -c 'CREATE EXTENSION IF NOT EXISTS vector;'
+psql ragforge_test -c 'CREATE EXTENSION IF NOT EXISTS vector;'
+```
+
+角色或库已存在就跳过对应语句。`CREATE EXTENSION` 需要超级用户，不要用 `rag` 去执行。
+
+### 4. 环境变量
+
+```bash
+cp .env.example .env
+```
+
+按需填写 `.env`（不要提交）：
+
+```bash
+OPENAI_API_KEY=          # 只跑测试可留空
+EMBEDDING_MODEL=text-embedding-3-small
+EMBEDDING_DIM=1536
+DATABASE_URL=postgresql+asyncpg://rag:rag@localhost:5432/ragforge
+```
+
+必须是 `postgresql+asyncpg://`。Alembic 会自己换成同步的 `+psycopg`。
+
+### 5. 迁移应用库
+
+```bash
+uv run alembic upgrade head
+```
+
+pytest 会在 `ragforge_test` 上自动 `upgrade head`，不用手迁测试库。
+
+### 6. 跑测试
+
+```bash
+uv run pytest -q
+```
+
+全绿即环境可用。还没有 `uvicorn` 服务；问答入口是库里的 `ask()`，需要自己写调用脚本，并注入 retriever / generator。
 
 ## 做什么
 
@@ -37,14 +113,14 @@ hybrid retrieval, RRF, reranking, ACL, and citation-aware generation.
 
 | 层 | 选择 |
 |---|---|
-| 语言 | Python |
+| 语言 | Python 3.13 |
 | Embedding | OpenAI `text-embedding-3-small`（1536 维） |
-| 切块 | LlamaIndex |
+| 切块 | 自研 heading / 句子切块（LlamaIndex 尚未接入） |
 | 存储 | PostgreSQL + pgvector + tsvector |
 | 融合 | RRF |
-| 精排 | Cross-encoder rerank |
-| 编排 | LangGraph |
-| API | FastAPI |
+| 精排 | Cross-encoder rerank（尚未做） |
+| 编排 | LangGraph（尚未做） |
+| API | FastAPI（尚未做） |
 
 一个知识库只绑定这一个 embedding 模型。换模型必须改 `vector(1536)` 并全量重 embed。
 
@@ -89,10 +165,15 @@ RAGForge/
 │       ├── ingest.py           # POST /documents
 │       ├── retrieve.py         # POST /retrieve
 │       └── chat.py             # POST /chat
-└── tests/
-    ├── test_chunker.py
-    ├── test_fusion.py
-    └── test_retrieve.py
+└── tests/                      # 与 src/rag/ 同目录
+    ├── conftest.py
+    ├── test_config.py
+    ├── test_qa.py
+    ├── generate/
+    ├── ingest/
+    ├── models/
+    ├── retrieve/
+    └── store/
 ```
 
 依赖方向：
@@ -111,30 +192,15 @@ ingest → embedder(text-embedding-3-small) → store
 2. 加上 tsvector 全文检索和 RRF
 3. 再补 ACL、rerank、引用、LangGraph、FastAPI
 
-## 运行前准备
-
-- Python 3.12+
-- PostgreSQL，启用 `vector` 扩展
-- OpenAI API Key
-
-环境变量（实现时放到 `.env`，不要提交）：
-
-```bash
-OPENAI_API_KEY=
-EMBEDDING_MODEL=text-embedding-3-small
-EMBEDDING_DIM=1536
-DATABASE_URL=postgresql://user:pass@localhost:5432/rag
-```
-
 ## TODO
 
-### 第一期（[docs/spec](docs/spec/README.md)，尚未写代码）
+### 第一期（[docs/spec](docs/spec/README.md)）
 
-- [ ] Step 1 脚手架与配置
-- [ ] Step 2 PostgreSQL + pgvector 存储
-- [ ] Step 3 Markdown 切块入库
-- [ ] Step 4 向量检索 + 生成（第一条 RAG）
-- [ ] Step 5 全文检索 + RRF
+- [x] Step 1 脚手架与配置
+- [x] Step 2 PostgreSQL + pgvector 存储
+- [x] Step 3 Markdown 切块入库
+- [x] Step 4 向量检索 + 生成（第一条 RAG）
+- [x] Step 5 全文检索 + RRF
 - [ ] Step 6 按 owner 的 ACL
 - [ ] Step 7 Cross-encoder rerank
 - [ ] Step 8 结构化引用

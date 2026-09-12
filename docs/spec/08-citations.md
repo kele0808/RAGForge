@@ -23,8 +23,8 @@
 - Modify: `src/rag/generate/answer.py`
 - Create: `src/rag/generate/citations.py`
 - Modify: `src/rag/qa.py` — 返回 `Answer` 而不是 `str`
-- Create: `tests/test_citations.py`
-- Modify: `tests/test_prompt.py`
+- Create: `tests/generate/test_citations.py`
+- Modify: `tests/generate/test_prompt.py`
 
 ## Interfaces
 

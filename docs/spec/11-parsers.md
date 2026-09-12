@@ -24,7 +24,7 @@
 - Modify: `src/rag/api/ingest.py` — 后缀白名单
 - Create: `fixtures/sample.docx`（可用测试里动态用 python-docx 生成，避免二进制 diff）
 - Create: `fixtures/sample.pdf`（测试里用 reportlab 或 pypdf 生成更干净）
-- Create: `tests/test_parser.py`
+- Create: `tests/ingest/test_parser.py`
 - Modify: `pyproject.toml`：
 
 ```toml
@@ -97,6 +97,6 @@ EOF
 第一期结束。你可以：
 
 - 用 20–50 条真实问题做一张表：问题、是否命中、引用是否对（不必上 RAGAS）
-- 再考虑 zhparser、多人 ACL 表、流式输出
+- 再考虑 zhparser、`document_acl` / 分享、JWT、流式输出
 
 不要马上上 GraphRAG。

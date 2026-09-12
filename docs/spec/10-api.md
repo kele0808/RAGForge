@@ -21,8 +21,8 @@
 - Create: `src/rag/api/ingest.py`
 - Create: `src/rag/api/retrieve.py`
 - Create: `src/rag/api/chat.py`
-- Create: `tests/test_api_chat.py`
-- Create: `tests/test_api_ingest.py`
+- Create: `tests/api/test_chat.py`
+- Create: `tests/api/test_ingest.py`
 - Modify: `pyproject.toml`：`"fastapi>=0.115"`, `"uvicorn[standard]>=0.30"`, `"python-multipart>=0.0.9"`, `"httpx>=0.27"`
 
 ## 路由契约

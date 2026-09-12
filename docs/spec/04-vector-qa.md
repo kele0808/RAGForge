@@ -24,8 +24,8 @@
 - Create: `src/rag/generate/prompt.py`
 - Create: `src/rag/generate/answer.py`
 - Create: `src/rag/qa.py` — 组合函数，供命令行/测试调用，**还不是** LangGraph
-- Create: `tests/test_vector_search.py`
-- Create: `tests/test_prompt.py`
+- Create: `tests/retrieve/test_vector.py`
+- Create: `tests/generate/test_prompt.py`
 - Create: `tests/test_qa.py`
 - Modify: `pyproject.toml` 如需：无新强制依赖（OpenAI 已有）
 

@@ -22,7 +22,7 @@
 - Create: `.env.example`
 - Create: `src/rag/__init__.py`
 - Create: `src/rag/config.py`
-- Create: `tests/test_config.py`
+- Create: `tests/test_config.py`  # 对应 `src/rag/config.py`
 - Modify: `.gitignore`（若还没有 `.env`、`.venv/`、`__pycache__/`）
 
 不要在这一步创建 ingest / retrieve / api 的空文件。没有用到的模块先不建。

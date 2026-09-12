@@ -29,7 +29,7 @@
 - Create: `alembic/env.py`
 - Create: `alembic/script.py.mako`
 - Create: `alembic/versions/0001_init_documents_chunks.py`
-- Create: `tests/test_repository.py`
+- Create: `tests/store/test_repository.py`
 - Modify: `pyproject.toml` — 加入：
 
 ```toml
@@ -52,7 +52,7 @@
 | owner_id | TEXT | 文档所有者，NOT NULL。第 6 步 ACL 用 |
 | created_at | TIMESTAMPTZ | 默认 `now()` |
 
-先不要单独的 `document_acl` 表。第 6 步用 `owner_id` 做「只有所有者能搜到」。以后要多人共享再加表，现在 YAGNI。
+第 2 步只要 `owner_id`（上传者）。第 6 步用它做「只有所有者能搜到」，但过滤必须经过 `visible_clause`，不要散落在每条 searcher 里。授权表 / 分享留给以后另一步。
 
 ### chunks
 
@@ -140,7 +140,7 @@ EMBEDDING_DIM = 1536  # must match settings.embedding_dim
 
 测试需要真实 PostgreSQL。用环境变量 `DATABASE_URL` 指向测试库，例如 `ragforge_test`。不要 mock 掉 SQL。
 
-`tests/test_repository.py`：
+`tests/store/test_repository.py`：
 
 ```python
 import pytest
@@ -183,12 +183,12 @@ async def test_rejects_wrong_embedding_dim(db_session):
 ```bash
 createdb ragforge_test
 psql ragforge_test -c 'CREATE EXTENSION IF NOT EXISTS vector;'
-DATABASE_URL=postgresql+asyncpg://rag:rag@localhost:5432/ragforge_test pytest tests/test_repository.py -v
+DATABASE_URL=postgresql+asyncpg://rag:rag@localhost:5432/ragforge_test pytest tests/store/test_repository.py -v
 ```
 
 - [ ] 写失败测试
 - [ ] 实现模型和 repository
-- [ ] `pytest tests/test_repository.py -v` 全绿
+- [ ] `pytest tests/store/test_repository.py -v` 全绿
 
 ## 手工检查
 
