@@ -1,14 +1,13 @@
 from __future__ import annotations
 
-from idlelib.window import add_windows_to_menu
 
 from rag.generate.answer import AnswerGenerator
-from rag.retrieve.vector import VectorSearcher
+from rag.retrieve.service import HybridRetriever
 async def ask(
         question: str,
         *,
-        searcher: VectorSearcher,
+        retriever: HybridRetriever,
         generator: AnswerGenerator,
 ) -> str:
-    hits = await searcher.search(question, top_k=8)
+    hits = await retriever.retrieve(question, top_k=8)
     return await generator.generate(question, hits)

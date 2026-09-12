@@ -1,7 +1,7 @@
 from __future__ import annotations
 import uuid
 from dataclasses import  dataclass
-from sqlalchemy import select
+from sqlalchemy import select, func
 from sqlalchemy.ext.asyncio import AsyncSession
 from rag.config import settings
 from rag.models.chunk import Chunk
@@ -54,6 +54,7 @@ class Repository:
                     chunk_index=c.chunk_index,
                     page=c.page,
                     embedding=c.embedding,
+                    tsv=func.to_tsvector("simple", c.content),
                 )
                 for c in chunks
             ]

@@ -39,8 +39,8 @@ async def test_generate_sends_grounded_prompt():
 
 @pytest.mark.asyncio
 async def test_ask_uses_serach_hits():
-    class FakeSearcher:
-        async def search(self, query: str, *, top_k: int) -> list[ChunkHit]:
+    class FakeRetriever:
+        async def retrieve(self, query: str, *, top_k: int) -> list[ChunkHit]:
             assert query == "病假要什么"
             assert top_k == 8
             return [ChunkHit("1", "d", "医院证明", "a.md", None, 0.9)]
@@ -48,7 +48,7 @@ async def test_ask_uses_serach_hits():
     fake = FakeCompletions()
     answer = await ask(
         "病假要什么",
-        searcher=FakeSearcher(),
+        retriever=FakeRetriever(),
         generator=AnswerGenerator(client=_client(fake)),
     )
     assert answer == "需要医院证明"
